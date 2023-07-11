@@ -1,6 +1,9 @@
+const express = require('express');
+const router = express.Router();
 
 
-app.get('/',(req, res) => {
+
+router.get('/',(req, res) => {
 
         console.log('se requiere slash');
         res.json({
@@ -8,3 +11,6 @@ app.get('/',(req, res) => {
         })
     }
 );
+
+
+module.exports = router;
