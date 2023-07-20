@@ -8,13 +8,17 @@ const app = express();
 // public directory
 app.use( express.static('public'))
 
+// Lectura y parseo de body
+app.use( express.json() );
 
-//* Rutas
+
+
+// Rutas
 app.use('/api/auth', require('./routes/auth') )
 // TODO: CRUD: Eventos
 
 
-//* Escuchar peticiones
+// Escuchar peticiones
 app.listen( process.env.PORT, () => {
         console.log(`server running on port ${ process.env.PORT }`);
     }

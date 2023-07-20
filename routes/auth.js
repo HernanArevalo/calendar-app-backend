@@ -5,16 +5,23 @@
 */
 
 const express = require('express');
+const { check } = require('express-validator')
 const router = express.Router();
 
-const { createUser } = require('../controllers/auth');
+const { createUser, userLogin, renewToken } = require('../controllers/auth');
 
 
 
-router.post('/new', createUser );
+router.post('/new', 
+[ // middlewares
+    check('name','El nombre es obligatorio').not().isEmpty(),
+    check('email','El email es obligatorio').isEmail(),
+    check('password', 'La contraseña debe tener 6 caracteres').isLength({ min: 6 }),
+] ,
+createUser );
 
-router.post('/',  );
+router.post('/', userLogin );
 
-router.get('/renew',  );
+router.get('/renew', renewToken );
 
 module.exports = router;
