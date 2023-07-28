@@ -12,15 +12,24 @@ const { createUser, userLogin, renewToken } = require('../controllers/auth');
 
 
 
-router.post('/new', 
-[ // middlewares
-    check('name','El nombre es obligatorio').not().isEmpty(),
-    check('email','El email es obligatorio').isEmail(),
-    check('password', 'La contraseña debe tener 6 caracteres').isLength({ min: 6 }),
-] ,
-createUser );
+router.post(
+    '/new', 
+    [ // middlewares
+        check('name','El nombre es obligatorio').not().isEmpty(),
+        check('email','El email es obligatorio').isEmail(),
+        check('password', 'La contraseña debe tener 6 caracteres').isLength({ min: 6 }),
+    ] ,
+    createUser
+);
 
-router.post('/', userLogin );
+router.post(
+    '/', 
+    [ // middlewares
+        check('email','El email es obligatorio').isEmail(),
+        check('password', 'La contraseña debe tener 6 caracteres').isLength({ min: 6 }),
+    ],
+    userLogin
+);
 
 router.get('/renew', renewToken );
 
