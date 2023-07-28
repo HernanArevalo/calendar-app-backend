@@ -1,6 +1,4 @@
 const express = require('express');
-const { validationResult } = require('express-validator');
-
 
 const createUser = (req, res = express.response ) => {
 

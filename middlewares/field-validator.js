@@ -6,7 +6,7 @@ const fieldValidator = (req, res = express.response, next) => {
 
     // Manejo de errores
     const errors = validationResult( req );
-    
+
     if ( !errors.isEmpty() ) {
 
         return res.status(400).json({
@@ -14,10 +14,9 @@ const fieldValidator = (req, res = express.response, next) => {
             errors: errors.mapped(),
         })
         
-    }
+    };
 
     next();
-
 
 }
 
