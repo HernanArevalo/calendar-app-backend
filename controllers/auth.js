@@ -1,8 +1,24 @@
 const express = require('express');
+const User = require('../models/User')
 
-const createUser = (req, res = express.response ) => {
 
-    const { name, email, password } = req.body;
+const createUser = async(req, res = express.response ) => {
+
+    // const { name, email, password } = req.body;
+
+    try {
+        const user = new User( req.body );
+    
+        await user.save();
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Please talk with admin.'
+        })
+        console.log(error)
+    }
+
 
 
     res.status(201).json({
