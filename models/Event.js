@@ -5,7 +5,7 @@ const SchemaEvent = Schema({
 
     title: {
         type: String,
-        require: true,
+        required: true,
 
     },
     notes: {
@@ -13,15 +13,17 @@ const SchemaEvent = Schema({
     },
     start: {
         type: Date,
-        require: true,
+        required: true,
     },
     end: {
         type: Date,
-        require: true
+        required: true
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
+
     }
 
 
