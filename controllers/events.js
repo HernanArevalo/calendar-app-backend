@@ -1,24 +1,28 @@
 const express = require('express');
 const Event = require('../models/Event')
 
-const getEvents = ( req, res = express.response ) => {
+
+
+
+const getEvents = async( req, res = express.response ) => {
+
+    const events = await Event.find()
+                              .populate('user','name')
+
 
     try {
 
-        res.status(200).json(
+        return res.status(200).json(
             {
                 ok: true,
-                msg: 'getEvents'
+                events
             }
         )
     } catch ( error ){
 
     }
 }
-// {
-//     ok: true,
-//     msg: 'getEvents'
-// }
+
 
 
 const createEvent = async( req, res = express.response ) => {
@@ -28,9 +32,11 @@ const createEvent = async( req, res = express.response ) => {
 
     try {
 
+        event.user = req.uid
+
         const savedEvent = await event.save();
 
-        res.status(200).json(
+        return res.status(200).json(
             {
                 ok: true,
                 msg: 'createEvent',
@@ -40,55 +46,106 @@ const createEvent = async( req, res = express.response ) => {
         
     } catch ( error ){
         console.log(error)
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             msg: 'talk with admin'
         });
     }
 }
-// {
-//     ok: true,
-//     msg: 'createEvent'
-// }
 
-const uploadEvent = ( req, res = express.response ) => {
+
+
+const uploadEvent = async ( req, res = express.response ) => {
+
+    const eventId = req.params.id;
+    const uid = req.uid;
+
 
     try {
 
-        res.status(200).json(
-            {
-                ok: true,
-                msg: 'uploadEvent'
-            }
-        )
-    } catch ( error ){
+        const event = await Event.findById( eventId );
 
+        if ( !event ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Event not found'
+            })
+        }
+
+        if ( event.user.toString()  !== uid ) {
+            return res.status(401).json({
+                ok: false,
+                msg: 'No tiene privilegio de editar este evento'
+            })
+        }
+
+        const newEvent = {
+            ...req.body,
+            user: uid
+        }
+
+        const eventUpdated = await Event.findByIdAndUpdate( event.id, newEvent, {new: true} );
+
+        return res.json({
+            ok: true,
+            event: eventUpdated
+        })
+
+    } catch ( error ){
+        return res.status(500).json({
+            ok: false,
+            msg: 'talk with admin'
+        })
     }
 }
-// {    /12345678
-//     ok: true,
-//     msg: 'uploadEvent'
-// }
 
 
-const deleteEvent = ( req, res = express.response ) => {
+
+const deleteEvent = async( req, res = express.response ) => {
+
+    const eventId = req.params.id;
+    const uid = req.uid;
+
 
     try {
 
-        res.status(200).json(
-            {
-                ok: true,
-                msg: 'deleteEvent'
-            }
-        )
-    } catch ( error ){
+        const event = await Event.findById( eventId );
 
+        if ( !event ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Event not found'
+            })
+        }
+
+        if ( event.user.toString()  !== uid ) {
+            return res.status(401).json({
+                ok: false,
+                msg: 'No tiene privilegio de editar este evento'
+            })
+        }
+
+        const newEvent = {
+            ...req.body,
+            user: uid
+        }
+
+        const eventDeleted = await Event.findByIdAndDelete( event.id, );
+
+        return res.json({
+            ok: true,
+            msg: 'Event deleted',
+            event: eventDeleted
+        })
+
+    } catch ( error ){
+        return res.status(500).json({
+            ok: false,
+            msg: 'talk with admin'
+        })
     }
 }
-// {    /12345678
-//     ok: true,
-//     msg: 'deleteEvent'
-// }
+
 
 
 module.exports = {
