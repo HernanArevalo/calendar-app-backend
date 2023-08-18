@@ -15,7 +15,7 @@ const createUser = async(req, res = express.response ) => {
         if (user){
             return res.status(400).json({
                 ok: false,
-                msg: 'Ya existe una cuenta con ese email.'
+                msg: 'El usuario ya existe.'
             })
         }
 
@@ -108,13 +108,13 @@ const renewToken = async(req, res = express.response ) => {
 
     const { uid, name } = req
     
-
     const token = await generateJWT( uid, name )
-
 
     res.json({
         ok: true,
-        token
+        uid,
+        name,
+        token,
     })
 }
 
