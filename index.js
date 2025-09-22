@@ -9,22 +9,11 @@ const app = express();
 //* Data Base
 dbConnection();
 
-//* cors 
+//* CORS config
 const allowedOrigins = [
   "https://calendar-app-hernanarevalo.vercel.app",
   "http://localhost:5173"
-]
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-}));
+];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -38,29 +27,25 @@ app.use(cors({
   credentials: true,
 }));
 
+// 👇 Manejar OPTIONS explícitamente (a veces necesario en Railway)
+app.options("*", cors());
 
-// public directory
-app.use( express.static('public'))
+// Public directory
+app.use(express.static('public'));
 
 // Lectura y parseo de body
-app.use( express.json() );
-
-
+app.use(express.json());
 
 // Rutas
-app.use('/api/auth', require('./routes/auth') )
-app.use('/api/events', require('./routes/events') )
-// TODO: CRUD: Eventos
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/events', require('./routes/events'));
 
+// SPA fallback
 app.get('*', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html' )
-
-})
-
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 // Escuchar peticiones
-app.listen( process.env.PORT, () => {
-        console.log(`server running on port ${ process.env.PORT }`);
-    }
-)
-
+app.listen(process.env.PORT, () => {
+  console.log(`server running on port ${process.env.PORT}`);
+});
